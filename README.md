@@ -27,6 +27,12 @@ free tools work without any wallet.
 
 ## Install
 
+**One-click (Claude Desktop):** download `brazilayer-mcp.mcpb` from the
+[latest release](https://github.com/brazilayer/mcp/releases/latest) and open it —
+Claude Desktop installs the server and prompts for your wallet key (optional).
+
+**From source:**
+
 ```bash
 git clone https://github.com/brazilayer/mcp brazilayer-mcp
 cd brazilayer-mcp && npm install
@@ -74,3 +80,5 @@ autonomous discovery.
 ## Contact
 
 contato@brazilayer.com · [Terms & data policy](https://api.brazilayer.com/termos)
+
+Also on the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.brazilayer/mcp`.
