@@ -19,11 +19,14 @@ registry, CGU/MTE sanction lists), redistributed as published. Service:
 | `cnpj_buscar_empresas` | Search companies by name, state, city or activity | $0.01 |
 | `cnpj_buscar_por_socio` | Reverse lookup: companies where a person is partner | $0.02 |
 | `integridade_consultar` | Sanctions screening: 5 official lists in one call | $0.01 |
+| `licitacoes_contratos_fornecedor` | Public contracts won by a company (PNCP) | $0.01 |
+| `licitacoes_oportunidades_abertas` | Open government tenders, live | $0.01 |
 | `cnpj_obter_amostra` | Sample company response | free |
 | `integridade_obter_amostra` | Sample screening response | free |
+| `licitacoes_obter_amostra` | Sample public-contracts response | free |
 
-Prices are paid in USDC on Base, per request, by the wallet you configure. The two
-free tools work without any wallet.
+Prices are paid in USDC on Base, per request, by the wallet you configure. The three
+free sample tools work without any wallet.
 
 ## Install
 

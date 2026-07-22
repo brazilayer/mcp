@@ -1,11 +1,18 @@
 {
   "manifest_version": "0.2",
   "name": "brazilayer-mcp",
-  "display_name": "Brazilayer — Brazilian Public Data",
-  "version": "0.2.0",
+  "display_name": "Brazilayer \u2014 Brazilian Public Data",
+  "version": "0.3.0",
   "description": "Brazilian company registry (CNPJ) and official sanctions screening for AI agents, paid per call in USDC via the x402 protocol. No signup, no API keys.",
-  "author": { "name": "Brazilayer", "email": "contato@brazilayer.com", "url": "https://www.brazilayer.com" },
-  "repository": { "type": "git", "url": "https://github.com/brazilayer/mcp" },
+  "author": {
+    "name": "Brazilayer",
+    "email": "contato@brazilayer.com",
+    "url": "https://www.brazilayer.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brazilayer/mcp"
+  },
   "homepage": "https://www.brazilayer.com",
   "license": "MIT",
   "server": {
@@ -13,14 +20,18 @@
     "entry_point": "dist/index.mjs",
     "mcp_config": {
       "command": "node",
-      "args": ["${__dirname}/dist/index.mjs"],
-      "env": { "BRAZILAYER_PRIVATE_KEY": "${user_config.private_key}" }
+      "args": [
+        "${__dirname}/dist/index.mjs"
+      ],
+      "env": {
+        "BRAZILAYER_PRIVATE_KEY": "${user_config.private_key}"
+      }
     }
   },
   "user_config": {
     "private_key": {
       "type": "string",
-      "title": "Wallet private key (0x…)",
+      "title": "Wallet private key (0x\u2026)",
       "description": "Private key of the wallet that pays for calls (USDC on Base). Use a dedicated wallet with a small budget. Leave empty to use only the free sample tools.",
       "sensitive": true,
       "required": false

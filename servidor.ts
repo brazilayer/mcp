@@ -171,6 +171,49 @@ servidor.registerTool(
   () => chamar('/v1/integridade/amostra'),
 )
 
+servidor.registerTool(
+  'licitacoes_contratos_fornecedor',
+  {
+    title: 'Public contracts won by a Brazilian company',
+    description:
+      'Every government contract won by a company (CNPJ), from the official procurement portal (PNCP): body, object, value, dates, plus summary totals. The B2G piece of due diligence. Costs $0.01 in USDC via x402.',
+    inputSchema: {
+      cnpj: z.string().describe('CNPJ, 14 digits, with or without punctuation'),
+    },
+  },
+  ({ cnpj }) => chamar(`/v1/licitacoes/fornecedor/${encodeURIComponent(cnpj)}`),
+)
+
+servidor.registerTool(
+  'licitacoes_oportunidades_abertas',
+  {
+    title: 'Open Brazilian government tenders (live)',
+    description:
+      'Tenders currently accepting proposals, live from the official source: object, estimated value, deadlines, bidding link. Filter by state and modality. Costs $0.01 in USDC via x402.',
+    inputSchema: {
+      uf: z.string().length(2).optional().describe('2-letter state code'),
+      modalidade: z.string().optional().describe('PNCP modality code, default 6 (electronic auction)'),
+      pagina: z.number().int().optional(),
+      por_pagina: z.number().int().max(50).optional(),
+    },
+  },
+  (f) => {
+    const q = new URLSearchParams()
+    for (const [k, v] of Object.entries(f)) if (v !== undefined) q.set(k, String(v))
+    return chamar(`/v1/licitacoes/abertas?${q}`)
+  },
+)
+
+servidor.registerTool(
+  'licitacoes_obter_amostra',
+  {
+    title: 'Free sample of the public-contracts response',
+    description: 'Full sample supplier-contracts response, free. Learn the format before paying.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/licitacoes/amostra'),
+)
+
 const transporte = new StdioServerTransport()
 await servidor.connect(transporte)
 console.error(`pedagio-mcp pronto (API: ${API}; pagamentos ${CHAVE ? 'ATIVOS' : 'inativos'})`)
