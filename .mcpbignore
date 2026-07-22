@@ -1,0 +1,4 @@
+node_modules/
+servidor.ts
+package-lock.json
+.github/

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.brazilayer/mcp",
+  "title": "Brazilayer — Brazilian Public Data",
+  "description": "Brazilian company registry (CNPJ) and official sanctions screening for AI agents, paid per call in USDC via x402. No signup, no API keys.",
+  "version": "0.2.0",
+  "repository": { "url": "https://github.com/brazilayer/mcp", "source": "github" },
+  "websiteUrl": "https://www.brazilayer.com",
+  "packages": [
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/brazilayer/mcp/releases/download/v0.2.0/brazilayer-mcp.mcpb",
+      "fileSha256": "SHA256_PLACEHOLDER",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "BRAZILAYER_PRIVATE_KEY",
+          "description": "Private key (0x…) of the wallet that pays for calls (USDC on Base). Optional: without it, only the free sample tools work.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
