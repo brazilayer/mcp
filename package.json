@@ -1,0 +1,21 @@
+{
+  "name": "brazilayer-mcp",
+  "version": "0.2.0",
+  "description": "MCP server for Brazilayer — Brazilian public data (company registry + sanctions) for AI agents, paid per call via x402",
+  "license": "MIT",
+  "type": "module",
+  "repository": { "type": "git", "url": "https://github.com/brazilayer/mcp.git" },
+  "homepage": "https://www.brazilayer.com",
+  "bin": { "brazilayer-mcp": "servidor.ts" },
+  "scripts": { "start": "tsx servidor.ts" },
+  "keywords": ["mcp", "model-context-protocol", "brazil", "cnpj", "sanctions", "x402", "kyb", "due-diligence"],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@x402/core": "^2.19.0",
+    "@x402/evm": "^2.19.0",
+    "@x402/fetch": "^2.19.0",
+    "tsx": "^4.19.0",
+    "viem": "^2.21.0",
+    "zod": "^3.23.0"
+  }
+}
