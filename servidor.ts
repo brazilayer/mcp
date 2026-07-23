@@ -214,6 +214,29 @@ servidor.registerTool(
   () => chamar('/v1/licitacoes/amostra'),
 )
 
+servidor.registerTool(
+  'bcb_verificar_instituicao',
+  {
+    title: 'Central Bank of Brazil authorization check',
+    description:
+      'Is this Brazilian company a Central Bank–authorized financial institution (bank, credit union, consortium)? Returns registrations and officially verified internet domains (anti-phishing). Costs $0.005 in USDC via x402. Updated daily.',
+    inputSchema: {
+      cnpj: z.string().describe('CNPJ (14 digits) or 8-digit root, punctuation ok'),
+    },
+  },
+  ({ cnpj }) => chamar(`/v1/bcb/instituicao/${encodeURIComponent(cnpj)}`),
+)
+
+servidor.registerTool(
+  'bcb_obter_amostra',
+  {
+    title: 'Free sample of the Central Bank check response',
+    description: 'Sample response for a real authorized bank, free.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/bcb/amostra'),
+)
+
 const transporte = new StdioServerTransport()
 await servidor.connect(transporte)
 console.error(`pedagio-mcp pronto (API: ${API}; pagamentos ${CHAVE ? 'ATIVOS' : 'inativos'})`)

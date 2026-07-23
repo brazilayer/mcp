@@ -21,9 +21,11 @@ registry, CGU/MTE sanction lists), redistributed as published. Service:
 | `integridade_consultar` | Sanctions screening: 5 official lists in one call | $0.01 |
 | `licitacoes_contratos_fornecedor` | Public contracts won by a company (PNCP) | $0.01 |
 | `licitacoes_oportunidades_abertas` | Open government tenders, live | $0.01 |
+| `bcb_verificar_instituicao` | Central Bank authorization + verified domains | $0.005 |
 | `cnpj_obter_amostra` | Sample company response | free |
 | `integridade_obter_amostra` | Sample screening response | free |
 | `licitacoes_obter_amostra` | Sample public-contracts response | free |
+| `bcb_obter_amostra` | Sample Central Bank check | free |
 
 Prices are paid in USDC on Base, per request, by the wallet you configure. The three
 free sample tools work without any wallet.

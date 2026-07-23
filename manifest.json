@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "brazilayer-mcp",
   "display_name": "Brazilayer \u2014 Brazilian Public Data",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Brazilian company registry (CNPJ) and official sanctions screening for AI agents, paid per call in USDC via the x402 protocol. No signup, no API keys.",
   "author": {
     "name": "Brazilayer",
