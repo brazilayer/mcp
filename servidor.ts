@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.2.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.5.0' })
 
 servidor.registerTool(
   'cnpj_consultar_empresa',
@@ -235,6 +235,71 @@ servidor.registerTool(
     inputSchema: {},
   },
   () => chamar('/v1/bcb/amostra'),
+)
+
+servidor.registerTool(
+  'empresa_enriquecer',
+  {
+    title: 'Full KYB profile of a Brazilian company (one call)',
+    description:
+      'The enrichment bundle: official registration + partners + branches + sanctions screening (5 lists) + Central Bank authorization + government contracts, in ONE call. Replaces 5 separate lookups. Costs $0.05 in USDC via x402.',
+    inputSchema: {
+      cnpj: z.string().describe('CNPJ, 14 digits, with or without punctuation'),
+    },
+  },
+  ({ cnpj }) => chamar(`/v1/empresa/enriquecer/${encodeURIComponent(cnpj)}`),
+)
+
+servidor.registerTool(
+  'mercado_noticias',
+  {
+    title: 'Brazilian financial & crypto news with sentiment',
+    description:
+      'BR market news refreshed every 15 minutes: headline, summary, link, topic, investor sentiment and 0-10 market relevance (AI-graded). Filter by topic, sentiment and minimum relevance. Costs $0.002 in USDC via x402.',
+    inputSchema: {
+      tema: z.enum(['cripto', 'macro', 'cambio', 'regulacao', 'empresas']).optional(),
+      sentimento: z.enum(['positivo', 'negativo', 'neutro']).optional(),
+      relevancia_min: z.number().int().min(0).max(10).optional(),
+      por_pagina: z.number().int().max(50).optional(),
+    },
+  },
+  (f) => {
+    const q = new URLSearchParams()
+    for (const [k, v] of Object.entries(f)) if (v !== undefined) q.set(k, String(v))
+    return chamar(`/v1/mercado/noticias?${q}`)
+  },
+)
+
+servidor.registerTool(
+  'mercado_indicadores',
+  {
+    title: 'Brazil macro snapshot (Selic, IPCA, PTAX, Focus)',
+    description:
+      'Key Brazilian macro indicators straight from the Central Bank: Selic policy rate, IPCA inflation, official PTAX USD/BRL, plus Focus survey medians (market forecasts). Costs $0.002 in USDC via x402.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/mercado/indicadores'),
+)
+
+servidor.registerTool(
+  'mercado_cambio',
+  {
+    title: 'USD/BRL: official PTAX + live crypto premium',
+    description:
+      'The official PTAX rate plus the LIVE BRL crypto market: BTC/BRL, USDT/BRL and the Brazil premium (ágio) over global prices — a classic capital-flow signal, computed at request time. Costs $0.002 in USDC via x402.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/mercado/cambio'),
+)
+
+servidor.registerTool(
+  'mercado_obter_amostra',
+  {
+    title: 'Free sample of the Brazil Markets dataset',
+    description: 'Latest headlines with sentiment + key indicators, free.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/mercado/amostra'),
 )
 
 const transporte = new StdioServerTransport()

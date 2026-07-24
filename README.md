@@ -22,10 +22,15 @@ registry, CGU/MTE sanction lists), redistributed as published. Service:
 | `licitacoes_contratos_fornecedor` | Public contracts won by a company (PNCP) | $0.01 |
 | `licitacoes_oportunidades_abertas` | Open government tenders, live | $0.01 |
 | `bcb_verificar_instituicao` | Central Bank authorization + verified domains | $0.005 |
+| `empresa_enriquecer` | Full KYB profile in ONE call: registration + partners + sanctions + BCB + contracts | $0.05 |
+| `mercado_noticias` | BR financial & crypto news with AI sentiment, 15-min refresh | $0.002 |
+| `mercado_indicadores` | Selic, IPCA, PTAX + Focus survey medians (Central Bank) | $0.002 |
+| `mercado_cambio` | Official PTAX + live BRL crypto premium (capital-flow signal) | $0.002 |
 | `cnpj_obter_amostra` | Sample company response | free |
 | `integridade_obter_amostra` | Sample screening response | free |
 | `licitacoes_obter_amostra` | Sample public-contracts response | free |
 | `bcb_obter_amostra` | Sample Central Bank check | free |
+| `mercado_obter_amostra` | Sample Brazil Markets response (news + indicators) | free |
 
 Prices are paid in USDC on Base, per request, by the wallet you configure. The three
 free sample tools work without any wallet.

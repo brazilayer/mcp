@@ -3,7 +3,7 @@
   "name": "io.github.brazilayer/mcp",
   "title": "Brazilayer \u2014 Brazilian Public Data",
   "description": "Brazilian company registry (CNPJ) + sanctions screening for AI agents. Pay per call via x402.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "repository": {
     "url": "https://github.com/brazilayer/mcp",
     "source": "github"
