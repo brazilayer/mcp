@@ -31,12 +31,16 @@ registry, CGU/MTE sanction lists), redistributed as published. Service:
 | `commodities_exportacoes` | Monthly commodity exports with YoY (soy, coffee, sugar, beef…) | $0.005 |
 | `commodities_hidrologia` | Stored hydro energy by grid subsystem (ONS) | $0.002 |
 | `commodities_briefing` | Daily AI Brazil Commodity Briefing in English, with direction flags | $0.02 |
+| `fundos_fluxos` | Daily net flows of Brazilian institutional money by fund class (R$ 13.8tn) | $0.005 |
+| `fundos_verificar` | Verify a fund at the CVM: registered, operating, manager (anti-fraud) | $0.005 |
+| `fundos_ranking` | Rank/screen ~25,000 fund classes by assets, inflows or shareholders | $0.01 |
 | `cnpj_obter_amostra` | Sample company response | free |
 | `integridade_obter_amostra` | Sample screening response | free |
 | `licitacoes_obter_amostra` | Sample public-contracts response | free |
 | `bcb_obter_amostra` | Sample Central Bank check | free |
 | `mercado_obter_amostra` | Sample Brazil Markets response (news + indicators) | free |
 | `commodities_obter_amostra` | Sample Commodity Signals response | free |
+| `fundos_obter_amostra` | Sample Fund Industry response | free |
 
 Prices are paid in USDC on Base, per request, by the wallet you configure. The three
 free sample tools work without any wallet.

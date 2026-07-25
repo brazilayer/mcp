@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.6.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.7.0' })
 
 servidor.registerTool(
   'cnpj_consultar_empresa',
@@ -365,6 +365,58 @@ servidor.registerTool(
     inputSchema: {},
   },
   () => chamar('/v1/commodities/amostra'),
+)
+
+servidor.registerTool(
+  'fundos_fluxos',
+  {
+    title: 'Where Brazilian institutional money moved (daily fund flows)',
+    description:
+      'Daily net flows (subscriptions minus redemptions) by fund class across the R$ 13.8 trillion Brazilian fund industry, from official CVM filings on ~25,000 fund classes. Emerging-market smart-money netflow. Costs $0.005 in USDC via x402.',
+    inputSchema: { dias: z.number().int().min(1).max(60).optional() },
+  },
+  ({ dias }) => chamar(`/v1/fundos/fluxos${dias ? `?dias=${dias}` : ''}`),
+)
+
+servidor.registerTool(
+  'fundos_verificar',
+  {
+    title: 'Verify a Brazilian investment fund at the CVM',
+    description:
+      'Is this CNPJ a fund registered and operating at the Brazilian securities regulator (CVM)? Returns manager, administrator, class and latest NAV, net assets and shareholders — the check against fake-fund and Ponzi schemes. Costs $0.005 in USDC via x402.',
+    inputSchema: { cnpj: z.string().describe('CNPJ, 14 digits, punctuation ok') },
+  },
+  ({ cnpj }) => chamar(`/v1/fundos/consulta/${encodeURIComponent(cnpj)}`),
+)
+
+servidor.registerTool(
+  'fundos_ranking',
+  {
+    title: 'Rank and screen Brazilian investment funds',
+    description:
+      'Rank funds by net assets, net inflows or shareholder count, filterable by class (Renda Fixa, Ações, Multimercado, Cambial), from official CVM data. Costs $0.01 in USDC via x402.',
+    inputSchema: {
+      por: z.enum(['patrimonio', 'captacao', 'cotistas']).optional(),
+      classificacao: z.string().optional(),
+      dias: z.number().int().max(60).optional(),
+      limite: z.number().int().max(50).optional(),
+    },
+  },
+  (f) => {
+    const q = new URLSearchParams()
+    for (const [k, v] of Object.entries(f)) if (v !== undefined) q.set(k, String(v))
+    return chamar(`/v1/fundos/ranking?${q}`)
+  },
+)
+
+servidor.registerTool(
+  'fundos_obter_amostra',
+  {
+    title: 'Free sample of the Fund Industry dataset',
+    description: 'Latest daily flows by class plus a real registered fund. Free.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/fundos/amostra'),
 )
 
 const transporte = new StdioServerTransport()
