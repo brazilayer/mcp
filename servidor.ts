@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.5.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.6.0' })
 
 servidor.registerTool(
   'cnpj_consultar_empresa',
@@ -300,6 +300,71 @@ servidor.registerTool(
     inputSchema: {},
   },
   () => chamar('/v1/mercado/amostra'),
+)
+
+servidor.registerTool(
+  'commodities_clima',
+  {
+    title: 'Crop-weather stress in Brazilian producing belts',
+    description:
+      'Observed + FORECAST rain, dry days and 72h frost risk for the belts that price global commodities: coffee (KC), soybeans (ZS), sugar (SB), corn, orange, cocoa. Updated twice daily. Costs $0.005 in USDC via x402.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/commodities/clima'),
+)
+
+servidor.registerTool(
+  'commodities_fogo',
+  {
+    title: 'Brazil satellite fire hotspots (official INPE)',
+    description:
+      'Daily fire hotspots by biome and state with intensity and a drought proxy — ESG, carbon and ag supply-chain signal. Costs $0.002 in USDC via x402.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/commodities/fogo'),
+)
+
+servidor.registerTool(
+  'commodities_exportacoes',
+  {
+    title: 'Brazilian commodity exports (monthly, official)',
+    description:
+      'Monthly export volumes and FOB for soybeans, corn, coffee, sugar, beef, chicken, cotton and pulp, with year-over-year change. Costs $0.005 in USDC via x402.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/commodities/exportacoes'),
+)
+
+servidor.registerTool(
+  'commodities_hidrologia',
+  {
+    title: 'Brazil stored hydro energy by grid subsystem',
+    description:
+      'Daily EAR percent per subsystem with 7-day delta, from the official grid operator — power-price and drought gauge. Costs $0.002 in USDC via x402.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/commodities/hidrologia'),
+)
+
+servidor.registerTool(
+  'commodities_briefing',
+  {
+    title: 'Daily Brazil Commodity Briefing (AI-synthesized, English)',
+    description:
+      'What changed in Brazil today for coffee, sugar, soybeans, corn, OJ, cotton and cattle — weather, fire, exports, hydro, FX and headlines condensed with per-commodity bullish/bearish flags. Costs $0.02 in USDC via x402.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/commodities/briefing'),
+)
+
+servidor.registerTool(
+  'commodities_obter_amostra',
+  {
+    title: 'Free sample of the Commodity Signals dataset',
+    description: 'A taste of each block: belt weather, fires, briefing excerpt. Free.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/commodities/amostra'),
 )
 
 const transporte = new StdioServerTransport()
