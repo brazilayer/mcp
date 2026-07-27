@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.7.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.8.0' })
 
 servidor.registerTool(
   'cnpj_consultar_empresa',
@@ -417,6 +417,60 @@ servidor.registerTool(
     inputSchema: {},
   },
   () => chamar('/v1/fundos/amostra'),
+)
+
+servidor.registerTool(
+  'tributos_ncm',
+  {
+    title: 'Which Brazilian IBS/CBS tax regime applies to a product (by NCM)',
+    description:
+      "Under Brazil's 2026-2033 tax reform: zero rate, 60% reduction or standard for a given NCM code — always with the LEGAL BASIS (annex, item and the literal wording of LC 214/2025) and the taxes in force that year. Not tax advice. Costs $0.005 in USDC via x402.",
+    inputSchema: {
+      codigo: z.string().describe('NCM code, 4 to 8 digits, dots optional'),
+      ano: z.string().optional().describe('year of the transition, 2026-2033'),
+    },
+  },
+  ({ codigo, ano }) =>
+    chamar(`/v1/tributos/ncm/${encodeURIComponent(codigo)}${ano ? `?ano=${ano}` : ''}`),
+)
+
+servidor.registerTool(
+  'tributos_busca',
+  {
+    title: "Search Brazil's tax reform annexes by product description",
+    description:
+      'Find every entry in the reform annexes granting reduced or zero IBS/CBS for a product or service, with the NCM codes cited and the legal wording. Costs $0.005 in USDC via x402.',
+    inputSchema: {
+      termo: z.string().min(3).describe('product/service description in Portuguese'),
+      limite: z.number().int().max(30).optional(),
+    },
+  },
+  ({ termo, limite }) => {
+    const q = new URLSearchParams({ termo })
+    if (limite) q.set('limite', String(limite))
+    return chamar(`/v1/tributos/busca?${q}`)
+  },
+)
+
+servidor.registerTool(
+  'tributos_calendario',
+  {
+    title: 'Brazilian tax transition calendar 2026-2033',
+    description:
+      'Which taxes are in force each year and when PIS/COFINS, IPI, ICMS and ISS are extinguished — the context to know whether a tax rule still applies on a given date. Costs $0.002 in USDC via x402.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/tributos/calendario'),
+)
+
+servidor.registerTool(
+  'tributos_obter_amostra',
+  {
+    title: 'Free sample of the Tax Reform dataset',
+    description: 'Zero-rate examples with legal basis + the current year of the transition. Free.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/tributos/amostra'),
 )
 
 const transporte = new StdioServerTransport()
