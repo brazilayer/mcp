@@ -30,13 +30,14 @@ registry, CGU/MTE sanction lists), redistributed as published. Service:
 | `commodities_fogo` | Satellite fire hotspots by biome + drought proxy (INPE) | $0.002 |
 | `commodities_exportacoes` | Monthly commodity exports with YoY (soy, coffee, sugar, beef…) | $0.005 |
 | `commodities_hidrologia` | Stored hydro energy by grid subsystem (ONS) | $0.002 |
-| `commodities_briefing` | Daily AI Brazil Commodity Briefing in English, with direction flags | $0.02 |
+| `commodities_briefing` | Daily AI Brazil Commodity Briefing in English, with direction flags | $0.10 |
 | `fundos_fluxos` | Daily net flows of Brazilian institutional money by fund class (R$ 13.8tn) | $0.005 |
 | `fundos_verificar` | Verify a fund at the CVM: registered, operating, manager (anti-fraud) | $0.005 |
 | `fundos_ranking` | Rank/screen ~25,000 fund classes by assets, inflows or shareholders | $0.01 |
 | `tributos_ncm` | Which IBS/CBS regime applies to a product (NCM), with legal basis | $0.005 |
 | `tributos_busca` | Search the tax-reform annexes by product description | $0.005 |
 | `tributos_calendario` | Brazilian tax transition calendar 2026-2033 | $0.002 |
+| `cadeia_causal` | Causal chain with lead time: energy, coffee, soy, capital flows | $0.05 |
 | `cnpj_obter_amostra` | Sample company response | free |
 | `integridade_obter_amostra` | Sample screening response | free |
 | `licitacoes_obter_amostra` | Sample public-contracts response | free |
@@ -45,6 +46,7 @@ registry, CGU/MTE sanction lists), redistributed as published. Service:
 | `commodities_obter_amostra` | Sample Commodity Signals response | free |
 | `fundos_obter_amostra` | Sample Fund Industry response | free |
 | `tributos_obter_amostra` | Sample Tax Reform response | free |
+| `cadeia_obter_amostra` | Sample causal chain | free |
 
 Prices are paid in USDC on Base, per request, by the wallet you configure. The three
 free sample tools work without any wallet.

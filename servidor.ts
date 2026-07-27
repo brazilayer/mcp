@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.8.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.9.0' })
 
 servidor.registerTool(
   'cnpj_consultar_empresa',
@@ -121,7 +121,7 @@ servidor.registerTool(
   {
     title: 'Reverse lookup: companies by partner name',
     description:
-      'Find every Brazilian company where a person or entity appears as partner/shareholder, by name. The due-diligence query. Costs $0.02 in USDC via x402.',
+      'Find every Brazilian company where a person or entity appears as partner/shareholder, by name. The due-diligence query. Costs $0.10 in USDC via x402.',
     inputSchema: {
       nome: z.string().min(3).describe('person or entity name'),
       pagina: z.number().int().optional(),
@@ -351,7 +351,7 @@ servidor.registerTool(
   {
     title: 'Daily Brazil Commodity Briefing (AI-synthesized, English)',
     description:
-      'What changed in Brazil today for coffee, sugar, soybeans, corn, OJ, cotton and cattle — weather, fire, exports, hydro, FX and headlines condensed with per-commodity bullish/bearish flags. Costs $0.02 in USDC via x402.',
+      'What changed in Brazil today for coffee, sugar, soybeans, corn, OJ, cotton and cattle — weather, fire, exports, hydro, FX and headlines condensed with per-commodity bullish/bearish flags. Costs $0.10 in USDC via x402.',
     inputSchema: {},
   },
   () => chamar('/v1/commodities/briefing'),
@@ -471,6 +471,29 @@ servidor.registerTool(
     inputSchema: {},
   },
   () => chamar('/v1/tributos/amostra'),
+)
+
+servidor.registerTool(
+  'cadeia_causal',
+  {
+    title: 'Causal chain for a Brazilian risk (lead time stated)',
+    description:
+      'Not a measurement — the chain behind it: upstream indicator WITH its lead time, current state, observable consequence and a deterministic reading (rule, thresholds and limits included). Chains: energia_br (rain → reservoirs → thermal dispatch), cafe_kc (frost/drought → coffee crop), soja_zs (rain in Mato Grosso → yield → exports), capital_br (dollar premium → fund flows → FX). Costs $0.05 in USDC via x402.',
+    inputSchema: {
+      nome: z.enum(['energia_br', 'cafe_kc', 'soja_zs', 'capital_br']),
+    },
+  },
+  ({ nome }) => chamar(`/v1/cadeias/${nome}`),
+)
+
+servidor.registerTool(
+  'cadeia_obter_amostra',
+  {
+    title: 'Free sample of a causal chain',
+    description: 'A complete chain with its reading and rule, free.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/cadeias/amostra'),
 )
 
 const transporte = new StdioServerTransport()
