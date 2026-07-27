@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.9.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.10.0' })
 
 servidor.registerTool(
   'cnpj_consultar_empresa',
@@ -494,6 +494,58 @@ servidor.registerTool(
     inputSchema: {},
   },
   () => chamar('/v1/cadeias/amostra'),
+)
+
+servidor.registerTool(
+  'desmatamento_municipio',
+  {
+    title: 'Deforestation record of a Brazilian municipality (EUDR cutoff)',
+    description:
+      'Official INPE satellite alerts (DETER, Amazon and Cerrado) for one municipality: area cleared and alert count since 31 Dec 2020 — the EU Deforestation Regulation cutoff — plus 30/90/365-day windows, breakdown by class and ranking. Costs $0.01 in USDC via x402.',
+    inputSchema: { ibge: z.string().describe('IBGE municipality code, 7 digits') },
+  },
+  ({ ibge }) => chamar(`/v1/desmatamento/municipio/${encodeURIComponent(ibge)}`),
+)
+
+servidor.registerTool(
+  'desmatamento_fornecedor',
+  {
+    title: 'Supplier origin risk: CNPJ to its municipality deforestation record',
+    description:
+      "From a Brazilian company's CNPJ to satellite-detected clearing in its registered municipality since the EUDR cutoff, with a risk level applied only to exposed sectors. Regional indicator to prioritise due diligence — the registered address is not the production plot. Costs $0.02 in USDC via x402.",
+    inputSchema: { cnpj: z.string().describe('CNPJ, 14 digits, punctuation ok') },
+  },
+  ({ cnpj }) => chamar(`/v1/desmatamento/fornecedor/${encodeURIComponent(cnpj)}`),
+)
+
+servidor.registerTool(
+  'desmatamento_ranking',
+  {
+    title: 'Where Brazilian deforestation is concentrated',
+    description:
+      'Rank municipalities or states by area cleared in a window, filterable by biome (Amazon or Cerrado), from official INPE alerts. Costs $0.01 in USDC via x402.',
+    inputSchema: {
+      por: z.enum(['municipio', 'uf']).optional(),
+      dias: z.number().int().max(2000).optional(),
+      bioma: z.enum(['amazonia', 'cerrado']).optional(),
+      limite: z.number().int().max(50).optional(),
+    },
+  },
+  (f) => {
+    const q = new URLSearchParams()
+    for (const [k, v] of Object.entries(f)) if (v !== undefined) q.set(k, String(v))
+    return chamar(`/v1/desmatamento/ranking?${q}`)
+  },
+)
+
+servidor.registerTool(
+  'desmatamento_obter_amostra',
+  {
+    title: 'Free sample of the Deforestation dataset',
+    description: 'National totals by biome and the worst-affected municipality. Free.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/desmatamento/amostra'),
 )
 
 const transporte = new StdioServerTransport()

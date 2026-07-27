@@ -38,6 +38,9 @@ registry, CGU/MTE sanction lists), redistributed as published. Service:
 | `tributos_busca` | Search the tax-reform annexes by product description | $0.005 |
 | `tributos_calendario` | Brazilian tax transition calendar 2026-2033 | $0.002 |
 | `cadeia_causal` | Causal chain with lead time: energy, coffee, soy, capital flows | $0.05 |
+| `desmatamento_municipio` | Deforestation of a municipality since the EUDR cutoff (INPE) | $0.01 |
+| `desmatamento_fornecedor` | Supplier CNPJ → deforestation record of its municipality | $0.02 |
+| `desmatamento_ranking` | Where clearing is concentrated, by municipality or state | $0.01 |
 | `cnpj_obter_amostra` | Sample company response | free |
 | `integridade_obter_amostra` | Sample screening response | free |
 | `licitacoes_obter_amostra` | Sample public-contracts response | free |
@@ -47,6 +50,7 @@ registry, CGU/MTE sanction lists), redistributed as published. Service:
 | `fundos_obter_amostra` | Sample Fund Industry response | free |
 | `tributos_obter_amostra` | Sample Tax Reform response | free |
 | `cadeia_obter_amostra` | Sample causal chain | free |
+| `desmatamento_obter_amostra` | Sample deforestation response | free |
 
 Prices are paid in USDC on Base, per request, by the wallet you configure. The three
 free sample tools work without any wallet.
