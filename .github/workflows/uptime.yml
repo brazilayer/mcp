@@ -1,0 +1,51 @@
+# Monitor de uptime EXTERNO da API (pendência D-0001 do pedagio, implantado 2026-08-13).
+#
+# Roda fora do VPS de propósito: se o servidor inteiro cair, o cron interno cai junto —
+# este job continua rodando na infra do GitHub e falha alto. Vive neste repo porque ele
+# é público (minutos de Actions ilimitados; o repo principal é privado e estouraria a
+# cota grátis com cron de 10 min).
+#
+# Alerta em duas camadas:
+#  1. Job falho → e-mail automático do GitHub ao dono do repo (zero configuração).
+#  2. Push no celular via ntfy.sh, SE o secret NTFY_TOPIC existir no repo — mesmo
+#     tópico que o VPS usa (/opt/pedagio/.env). Para ligar:
+#     gh secret set NTFY_TOPIC -R brazilayer/mcp --body "<topico>"
+name: uptime
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: API e site respondem
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          set -u
+          falhas=""
+
+          code=$(curl -s -o corpo.json -w '%{http_code}' --max-time 25 https://api.brazilayer.com/v1/health || echo 000)
+          if [ "$code" != "200" ] || ! grep -q '"status":"ok"' corpo.json; then
+            falhas="api.brazilayer.com/v1/health devolveu HTTP $code"
+          fi
+
+          site=$(curl -s -o /dev/null -w '%{http_code}' --max-time 25 https://www.brazilayer.com || echo 000)
+          if [ "$site" != "200" ]; then
+            falhas="${falhas:+$falhas; }www.brazilayer.com devolveu HTTP $site"
+          fi
+
+          if [ -n "$falhas" ]; then
+            echo "::error::$falhas"
+            if [ -n "${NTFY_TOPIC:-}" ]; then
+              curl -s --max-time 15 \
+                -H "Title: Brazilayer fora do ar" -H "Priority: urgent" -H "Tags: rotating_light" \
+                -d "$falhas (monitor externo, GitHub Actions, $(date -u +'%Y-%m-%d %H:%M') UTC)" \
+                "https://ntfy.sh/$NTFY_TOPIC" > /dev/null || true
+            fi
+            exit 1
+          fi
+          echo "ok: api $code, site $site"
