@@ -28,15 +28,26 @@ jobs:
           set -u
           falhas=""
 
-          code=$(curl -s -o corpo.json -w '%{http_code}' --max-time 25 https://api.brazilayer.com/v1/health || echo 000)
-          if [ "$code" != "200" ] || ! grep -q '"status":"ok"' corpo.json; then
-            falhas="api.brazilayer.com/v1/health devolveu HTTP $code"
-          fi
+          # 2 tentativas com 30s de intervalo, como o monitor interno do VPS: curl
+          # único de runner compartilhado gera falso positivo (2 casos em 13-14/08
+          # com tráfego comprovadamente contínuo na telemetria no minuto exato)
+          checar() { # $1=url  $2=grep-opcional  → ecoa o code final
+            local code
+            for i in 1 2; do
+              code=$(curl -s -o corpo.json -w '%{http_code}' --max-time 25 "$1" || echo 000)
+              if [ "$code" = "200" ] && { [ -z "$2" ] || grep -q "$2" corpo.json; }; then
+                echo "$code"; return 0
+              fi
+              [ "$i" = "1" ] && sleep 30
+            done
+            echo "$code"; return 1
+          }
 
-          site=$(curl -s -o /dev/null -w '%{http_code}' --max-time 25 https://www.brazilayer.com || echo 000)
-          if [ "$site" != "200" ]; then
-            falhas="${falhas:+$falhas; }www.brazilayer.com devolveu HTTP $site"
-          fi
+          code=$(checar https://api.brazilayer.com/v1/health '"status":"ok"') \
+            || falhas="api.brazilayer.com/v1/health devolveu HTTP $code (2 tentativas)"
+
+          site=$(checar https://www.brazilayer.com '') \
+            || falhas="${falhas:+$falhas; }www.brazilayer.com devolveu HTTP $site (2 tentativas)"
 
           if [ -n "$falhas" ]; then
             echo "::error::$falhas"
