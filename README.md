@@ -1,114 +1,67 @@
-# Brazilayer MCP Server
+# pedagio-mcp — servidor MCP
 
-Give your AI agent access to **Brazilian public data** — the full company registry and
-every official sanction list — as MCP tools, paid per call with USDC via the
-[x402 protocol](https://www.x402.org/). No signup, no API keys.
+> **Distribuição pública:** este servidor é publicado em **[github.com/brazilayer/mcp](https://github.com/brazilayer/mcp)**
+> (instalação para usuários finais lá). Esta pasta é a fonte interna; alterações aqui
+> devem ser espelhadas no repo público.
 
-Data comes straight from official government sources (Receita Federal company
-registry, CGU/MTE sanction lists), redistributed as published. Service:
-[www.brazilayer.com](https://www.brazilayer.com) · API docs:
-[api.brazilayer.com/docs](https://api.brazilayer.com/docs)
+Cliente fino da API pública do pedagio (SPEC §8): expõe os dados de CNPJ como
+ferramentas MCP pagáveis via x402. Sem acesso direto ao banco — cada ferramenta chama a
+API HTTP e paga com USDC (rede Base) usando a carteira configurada.
 
-## Tools
+## Ferramentas
 
-| Tool | What it does | Price |
-|------|--------------|-------|
-| `cnpj_consultar_empresa` | Company registration card by CNPJ | $0.005 |
-| `cnpj_listar_socios` | Partners/shareholders of a company | $0.005 |
-| `cnpj_consultar_empresa_completo` | Full profile: registration + partners + branches | $0.01 |
-| `cnpj_buscar_empresas` | Search companies by name, state, city or activity | $0.01 |
-| `cnpj_buscar_por_socio` | Reverse lookup: companies where a person is partner | $0.02 |
-| `integridade_consultar` | Sanctions screening: 5 official lists in one call | $0.01 |
-| `licitacoes_contratos_fornecedor` | Public contracts won by a company (PNCP) | $0.01 |
-| `licitacoes_oportunidades_abertas` | Open government tenders, live | $0.01 |
-| `bcb_verificar_instituicao` | Central Bank authorization + verified domains | $0.005 |
-| `empresa_enriquecer` | Full KYB profile in ONE call: registration + partners + sanctions + BCB + contracts | $0.05 |
-| `mercado_noticias` | BR financial & crypto news with AI sentiment, 15-min refresh | $0.002 |
-| `mercado_indicadores` | Selic, IPCA, PTAX + Focus survey medians (Central Bank) | $0.002 |
-| `mercado_cambio` | Official PTAX + live BRL crypto premium (capital-flow signal) | $0.002 |
-| `commodities_clima` | Crop-weather stress per Brazilian belt: rain, drought, frost risk | $0.005 |
-| `commodities_fogo` | Satellite fire hotspots by biome + drought proxy (INPE) | $0.002 |
-| `commodities_exportacoes` | Monthly commodity exports with YoY (soy, coffee, sugar, beef…) | $0.005 |
-| `commodities_hidrologia` | Stored hydro energy by grid subsystem (ONS) | $0.002 |
-| `commodities_briefing` | Daily AI Brazil Commodity Briefing in English, with direction flags | $0.10 |
-| `fundos_fluxos` | Daily net flows of Brazilian institutional money by fund class (R$ 13.8tn) | $0.005 |
-| `fundos_verificar` | Verify a fund at the CVM: registered, operating, manager (anti-fraud) | $0.005 |
-| `fundos_ranking` | Rank/screen ~25,000 fund classes by assets, inflows or shareholders | $0.01 |
-| `tributos_ncm` | Which IBS/CBS regime applies to a product (NCM), with legal basis | $0.005 |
-| `tributos_busca` | Search the tax-reform annexes by product description | $0.005 |
-| `tributos_calendario` | Brazilian tax transition calendar 2026-2033 | $0.002 |
-| `cadeia_causal` | Causal chain with lead time: energy, coffee, soy, capital flows | $0.05 |
-| `desmatamento_municipio` | Deforestation of a municipality since the EUDR cutoff (INPE) | $0.01 |
-| `desmatamento_fornecedor` | Supplier CNPJ → deforestation record of its municipality | $0.02 |
-| `desmatamento_ranking` | Where clearing is concentrated, by municipality or state | $0.01 |
-| `cnpj_obter_amostra` | Sample company response | free |
-| `integridade_obter_amostra` | Sample screening response | free |
-| `licitacoes_obter_amostra` | Sample public-contracts response | free |
-| `bcb_obter_amostra` | Sample Central Bank check | free |
-| `mercado_obter_amostra` | Sample Brazil Markets response (news + indicators) | free |
-| `commodities_obter_amostra` | Sample Commodity Signals response | free |
-| `fundos_obter_amostra` | Sample Fund Industry response | free |
-| `tributos_obter_amostra` | Sample Tax Reform response | free |
-| `cadeia_obter_amostra` | Sample causal chain | free |
-| `desmatamento_obter_amostra` | Sample deforestation response | free |
+| Ferramenta | Endpoint | Preço |
+|------------|----------|-------|
+| `cnpj_consultar_empresa` | `GET /v1/cnpj/empresa/{cnpj}` | US$ 0.005 |
+| `cnpj_listar_socios` | `GET /v1/cnpj/empresa/{cnpj}/socios` | US$ 0.005 |
+| `cnpj_consultar_empresa_completo` | `GET /v1/cnpj/empresa/{cnpj}/completo` | US$ 0.01 |
+| `cnpj_buscar_empresas` | `GET /v1/cnpj/busca` | US$ 0.01 |
+| `cnpj_buscar_por_socio` | `GET /v1/cnpj/socio/busca` | US$ 0.02 |
+| `cnpj_obter_amostra` | `GET /v1/cnpj/amostra` | grátis |
 
-Prices are paid in USDC on Base, per request, by the wallet you configure. The three
-free sample tools work without any wallet.
-
-## Install
-
-**One-click (Claude Desktop):** download `brazilayer-mcp.mcpb` from the
-[latest release](https://github.com/brazilayer/mcp/releases/latest) and open it —
-Claude Desktop installs the server and prompts for your wallet key (optional).
-
-**From source:**
+## Instalação (Claude Code)
 
 ```bash
-git clone https://github.com/brazilayer/mcp brazilayer-mcp
-cd brazilayer-mcp && npm install
+git clone https://github.com/aladaf/pedagio && cd pedagio/mcp && npm install
+claude mcp add pedagio -e BRAZILAYER_PRIVATE_KEY=0xSUACHAVE -- npx tsx /caminho/para/pedagio/mcp/servidor.ts
 ```
 
-**Claude Code:**
-
-```bash
-claude mcp add brazilayer -e BRAZILAYER_PRIVATE_KEY=0xYOUR_KEY -- npx tsx /path/to/brazilayer-mcp/servidor.ts
-```
-
-**Claude Desktop / Cursor** (`mcpServers` config):
+## Instalação (Claude Desktop / Cursor)
 
 ```json
 {
   "mcpServers": {
-    "brazilayer": {
+    "pedagio": {
       "command": "npx",
-      "args": ["tsx", "/path/to/brazilayer-mcp/servidor.ts"],
-      "env": { "BRAZILAYER_PRIVATE_KEY": "0xYOUR_KEY" }
+      "args": ["tsx", "/caminho/para/pedagio/mcp/servidor.ts"],
+      "env": {
+        "BRAZILAYER_PRIVATE_KEY": "0xCHAVE_DA_CARTEIRA_QUE_PAGA"
+      }
     }
   }
 }
 ```
 
-## Configuration
+## Variáveis
 
-| Variable | Purpose |
-|----------|---------|
-| `BRAZILAYER_PRIVATE_KEY` | Private key (`0x…`) of the wallet that **pays** for calls. Needs USDC on Base. Without it, only the free sample tools work. |
-| `BRAZILAYER_API_URL` | API base URL. Default: `https://api.brazilayer.com` |
+- `BRAZILAYER_API_URL` — default `https://api.brazilayer.com`
+- `BRAZILAYER_PRIVATE_KEY` — chave privada (0x…) da carteira que **paga** as chamadas
+  (precisa de USDC na rede Base; na testnet, USDC de faucet na Base Sepolia). Sem ela,
+  apenas `cnpj_obter_amostra` funciona; as demais explicam o 402.
 
-⚠️ **Wallet safety:** the key you configure signs real payments. Use a dedicated
-wallet holding only a small budget (a few dollars covers hundreds of calls), never
-your main wallet.
+⚠️ A chave configurada aqui assina pagamentos reais. Use uma carteira dedicada com
+saldo pequeno.
 
-## How payment works
+## Escolha da integração x402↔MCP (SPEC §8)
 
-Each paid tool calls the Brazilayer API. The server replies `HTTP 402` with the price
-and payment terms; this MCP server signs a USDC authorization (EIP-3009, gasless for
-you) and retries automatically. One tool call ≈ two seconds, end to end. The service
-is also listed on the [x402 Bazaar](https://docs.cdp.coinbase.com/x402/bazaar) for
-autonomous discovery.
+Avaliado em 2026-07-20: adotados os pacotes oficiais `@x402/fetch` + `@x402/evm`
+(v2.19), que envelopam o `fetch` com o fluxo 402→assinatura→retry — o servidor MCP usa
+esse fetch pagante em cada ferramenta. Alternativas de bridge MCP de terceiros foram
+descartadas por serem menos mantidas que o SDK oficial.
 
-## Contact
+---
 
-contato@brazilayer.com · [Terms & data policy](https://api.brazilayer.com/termos)
-
-Also on the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.brazilayer/mcp`.
+Building on the agent economy? We publish the
+**[Agent Economy Report](https://agenteconomy.report)** — a free weekly, data-generated
+index of the machine-to-machine economy (x402 services, on-chain settlement, MCP and
+paid-web adoption). One e-mail a week.
