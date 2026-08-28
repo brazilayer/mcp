@@ -1,7 +1,7 @@
 {
   "name": "brazilayer-mcp",
-  "version": "0.10.0",
-  "description": "MCP server for Brazilayer \u2014 Brazilian public data (company registry + sanctions) for AI agents, paid per call via x402",
+  "version": "0.13.0",
+  "description": "MCP server for Brazilayer — Brazilian public data (company registry + sanctions) for AI agents, paid per call via x402",
   "license": "MIT",
   "type": "module",
   "repository": {

@@ -18,6 +18,8 @@ API HTTP e paga com USDC (rede Base) usando a carteira configurada.
 | `cnpj_buscar_empresas` | `GET /v1/cnpj/busca` | US$ 0.01 |
 | `cnpj_buscar_por_socio` | `GET /v1/cnpj/socio/busca` | US$ 0.02 |
 | `cnpj_obter_amostra` | `GET /v1/cnpj/amostra` | grátis |
+| `trust_check` | Trust rating of any x402 service before paying it (Agent Economy Report, free) | free |
+| `skill_check` | Trust rating of any agent skill before installing it (Agent Economy Report, free) | free |
 
 ## Instalação (Claude Code)
 

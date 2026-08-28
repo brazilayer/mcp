@@ -1,0 +1,16 @@
+# Smithery (smithery.ai) listing metadata. The server is stdio; payments are optional.
+name: brazilayer
+displayName: Brazilayer, Brazilian Public Data
+description: Brazilian company registry (CNPJ), sanctions, Central Bank, procurement, funds and market data for AI agents, paid per call via x402; free trust checks of x402 services and agent skills (Agent Economy Report).
+category: data
+tags: [brazil, cnpj, kyb, sanctions, x402, trust, rating, skills]
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      privateKey:
+        type: string
+        description: "0x... key of the wallet that pays for calls (USDC on Base). Optional: without it only the free tools work."
+  commandFunction: |-
+    (config) => ({ command: 'node', args: ['dist/index.mjs'], env: { BRAZILAYER_PRIVATE_KEY: config.privateKey || '' } })
