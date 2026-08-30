@@ -28,26 +28,29 @@ jobs:
           set -u
           falhas=""
 
-          # 2 tentativas com 30s de intervalo, como o monitor interno do VPS: curl
-          # único de runner compartilhado gera falso positivo (2 casos em 13-14/08
-          # com tráfego comprovadamente contínuo na telemetria no minuto exato)
+          # 3 tentativas com 20s de intervalo: curl único de runner compartilhado gera
+          # falso positivo (2 casos em 13-14/08 e 1 em 30/08 11:19 UTC, "HTTP 000" no
+          # www com a API respondendo na MESMA execução e nenhuma requisição do runner
+          # chegando ao access log do servidor: a falha foi da rede do runner). Além de
+          # insistir mais, guarda a mensagem de erro do curl para o próximo diagnóstico.
           checar() { # $1=url  $2=grep-opcional  → ecoa o code final
             local code
-            for i in 1 2; do
-              code=$(curl -s -o corpo.json -w '%{http_code}' --max-time 25 "$1" || echo 000)
+            for i in 1 2 3; do
+              code=$(curl -sS -o corpo.json -w '%{http_code}' --max-time 25 "$1" 2>erro.txt || echo 000)
               if [ "$code" = "200" ] && { [ -z "$2" ] || grep -q "$2" corpo.json; }; then
                 echo "$code"; return 0
               fi
-              [ "$i" = "1" ] && sleep 30
+              echo "tentativa $i: HTTP $code $(tr -d '\n' < erro.txt | cut -c1-160)" >&2
+              [ "$i" != "3" ] && sleep 20
             done
             echo "$code"; return 1
           }
 
           code=$(checar https://api.brazilayer.com/v1/health '"status":"ok"') \
-            || falhas="api.brazilayer.com/v1/health devolveu HTTP $code (2 tentativas)"
+            || falhas="api.brazilayer.com/v1/health devolveu HTTP $code (3 tentativas)"
 
           site=$(checar https://www.brazilayer.com '') \
-            || falhas="${falhas:+$falhas; }www.brazilayer.com devolveu HTTP $site (2 tentativas)"
+            || falhas="${falhas:+$falhas; }www.brazilayer.com devolveu HTTP $site (3 tentativas)"
 
           if [ -n "$falhas" ]; then
             echo "::error::$falhas"
