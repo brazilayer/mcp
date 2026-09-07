@@ -1,4 +1,4 @@
-# Monitor de uptime EXTERNO da API (pendência D-0001 do pedagio, implantado 2026-08-13).
+# Monitor de uptime EXTERNO da API e do índice (agenteconomy.report desde 07/09/2026) (pendência D-0001 do pedagio, implantado 2026-08-13).
 #
 # Roda fora do VPS de propósito: se o servidor inteiro cair, o cron interno cai junto —
 # este job continua rodando na infra do GitHub e falha alto. Vive neste repo porque ele
@@ -52,6 +52,11 @@ jobs:
           site=$(checar https://www.brazilayer.com '') \
             || falhas="${falhas:+$falhas; }www.brazilayer.com devolveu HTTP $site (3 tentativas)"
 
+          # Agent Economy Report (07/09/2026): o vhost, o TLS e a API por trás dele,
+          # numa checagem só (o well-known é servido pela API via rewrite do Caddy)
+          aer=$(checar https://agenteconomy.report/.well-known/x402 'x402Version') \
+            || falhas="${falhas:+$falhas; }agenteconomy.report/.well-known/x402 devolveu HTTP $aer (3 tentativas)"
+
           if [ -n "$falhas" ]; then
             echo "::error::$falhas"
             if [ -n "${NTFY_TOPIC:-}" ]; then
@@ -62,4 +67,4 @@ jobs:
             fi
             exit 1
           fi
-          echo "ok: api $code, site $site"
+          echo "ok: api $code, site $site, agenteconomy $aer"
