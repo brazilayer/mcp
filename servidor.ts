@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.14.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.15.0' })
 
 servidor.registerTool(
   'cnpj_situacao',
@@ -312,6 +312,17 @@ servidor.registerTool(
 )
 
 servidor.registerTool(
+  'mercado_pacote',
+  {
+    title: 'Brazilian market snapshot in one call (FX + indicators + headlines)',
+    description:
+      'cambio, indicadores and noticias in a single response, keyed by name, a third cheaper than one by one. Costs $0.004 in USDC via x402.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/mercado/pacote'),
+)
+
+servidor.registerTool(
   'mercado_obter_amostra',
   {
     title: 'Free sample of the Brazil Markets dataset',
@@ -374,6 +385,28 @@ servidor.registerTool(
     inputSchema: {},
   },
   () => chamar('/v1/commodities/briefing'),
+)
+
+servidor.registerTool(
+  'commodities_pacote',
+  {
+    title: 'All five Brazil commodity signals in one call (47% cheaper)',
+    description:
+      'clima, fogo, exportacoes, hidrologia and briefing in a single response, keyed by name; unavailable components listed in `indisponiveis`. Costs $0.06 in USDC via x402 (vs $0.114 one by one).',
+    inputSchema: {},
+  },
+  () => chamar('/v1/commodities/pacote'),
+)
+
+servidor.registerTool(
+  'brasil_pacote',
+  {
+    title: 'Everything parameter-free in the Brazilayer catalog, in one call (43% cheaper)',
+    description:
+      'The 13 endpoints that need no parameter — commodities, market, fund flows and ranking, tax calendar, deforestation ranking, open tenders — keyed by family and name (/v1/pacotes/brasil). Costs $0.09 in USDC via x402 (vs $0.157 one by one). Free list of the packs: /v1/pacotes/amostra.',
+    inputSchema: {},
+  },
+  () => chamar('/v1/pacotes/brasil'),
 )
 
 servidor.registerTool(

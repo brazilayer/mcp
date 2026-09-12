@@ -3,7 +3,7 @@
   "name": "io.github.brazilayer/mcp",
   "title": "Brazilayer — Brazilian Public Data",
   "description": "Brazilian company registry (CNPJ), sanctions, funds & market data for AI agents, paid via x402.",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "repository": {
     "url": "https://github.com/brazilayer/mcp",
     "source": "github"
@@ -12,7 +12,7 @@
   "packages": [
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/brazilayer/mcp/releases/download/v0.14.0/brazilayer-mcp.mcpb",
+      "identifier": "https://github.com/brazilayer/mcp/releases/download/v0.15.0/brazilayer-mcp.mcpb",
       "fileSha256": "SHA256_PLACEHOLDER",
       "transport": {
         "type": "stdio"
