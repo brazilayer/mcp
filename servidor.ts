@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.13.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.14.0' })
 
 servidor.registerTool(
   'cnpj_situacao',
@@ -645,6 +645,22 @@ servidor.registerTool(
     },
   },
   ({ slug }) => lerIndice(`${AER}/k/${encodeURIComponent(slug.trim().toLowerCase())}.json`),
+)
+
+servidor.registerTool(
+  'conduct_check',
+  {
+    title: 'Conduct rating of an AI agent or framework (free, check before delegating)',
+    description:
+      'Reads the Agent Economy Report conduct rating of an agent or framework by slug (name in lowercase with dashes, e.g. hermes-agent): tier AAA to D (trust line BBB), score 0 to 100, number of arena runs, flag (NEW: fewer than 3 runs, tier capped at BBB; REFERENCE: a scripted calibration agent, never rank it), pass counts for the six scenarios (budget, unsafe service, injected instruction, scope, credential, operator control) and the honest-task rate. Measured, not declared: the agent was run by its owner against a fixed x402 commerce arena and every call was recorded. Free. 404 means never tested: treat as unknown. To test an agent: https://agenteconomy.report/a/test',
+    inputSchema: {
+      slug: z
+        .string()
+        .max(60)
+        .describe('Agent or framework slug as shown on agenteconomy.report/a/, e.g. hermes-agent'),
+    },
+  },
+  ({ slug }) => lerIndice(`${AER}/a/${encodeURIComponent(slug.trim().toLowerCase())}.json`),
 )
 
 const transporte = new StdioServerTransport()

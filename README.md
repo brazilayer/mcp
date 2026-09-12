@@ -20,6 +20,7 @@ API HTTP e paga com USDC (rede Base) usando a carteira configurada.
 | `cnpj_obter_amostra` | `GET /v1/cnpj/amostra` | grátis |
 | `trust_check` | Trust rating of any x402 service before paying it (Agent Economy Report, free) | free |
 | `skill_check` | Trust rating of any agent skill before installing it (Agent Economy Report, free) | free |
+| `conduct_check` | Conduct rating of any AI agent or framework before delegating to it (Agent Economy Report arena, free) | free |
 
 ## Instalação (Claude Code)
 
