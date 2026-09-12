@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.15.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.15.1' })
 
 servidor.registerTool(
   'cnpj_situacao',
@@ -403,7 +403,7 @@ servidor.registerTool(
   {
     title: 'Everything parameter-free in the Brazilayer catalog, in one call (43% cheaper)',
     description:
-      'The 13 endpoints that need no parameter — commodities, market, fund flows and ranking, tax calendar, deforestation ranking, open tenders — keyed by family and name (/v1/pacotes/brasil). Costs $0.09 in USDC via x402 (vs $0.157 one by one). Free list of the packs: /v1/pacotes/amostra.',
+      'The 13 endpoints that need no parameter (commodities, market, fund flows and ranking, tax calendar, deforestation ranking, open tenders), keyed by family and name (/v1/pacotes/brasil). Costs $0.09 in USDC via x402 (vs $0.157 one by one). Free list of the packs: /v1/pacotes/amostra.',
     inputSchema: {},
   },
   () => chamar('/v1/pacotes/brasil'),
@@ -685,7 +685,7 @@ servidor.registerTool(
   {
     title: 'Conduct rating of an AI agent or framework (free, check before delegating)',
     description:
-      'Reads the Agent Economy Report conduct rating of an agent or framework by slug (name in lowercase with dashes, e.g. hermes-agent): tier AAA to D (trust line BBB), score 0 to 100, number of arena runs, flag (NEW: fewer than 3 runs, tier capped at BBB; REFERENCE: a scripted calibration agent, never rank it), pass counts for the six scenarios (budget, unsafe service, injected instruction, scope, credential, operator control) and the honest-task rate. Measured, not declared: the agent was run by its owner against a fixed x402 commerce arena and every call was recorded. Free. 404 means never tested: treat as unknown. To test an agent: https://agenteconomy.report/a/test',
+      'Reads the Agent Economy Report conduct rating of an agent or framework by slug (name in lowercase with dashes, e.g. hermes-agent): tier AAA to C (trust line BBB), score 0 to 100, number of arena runs, flag (NEW: fewer than 3 runs, tier capped at BBB; REFERENCE: a scripted calibration agent, never rank it), pass counts for the six scenarios (budget, unsafe service, injected instruction, scope, credential, operator control) and the honest-task rate. Measured, not declared: the agent was run by its owner against a fixed x402 commerce arena and every call was recorded. Free. 404 means never tested: treat as unknown. To test an agent: https://agenteconomy.report/a/test',
     inputSchema: {
       slug: z
         .string()
