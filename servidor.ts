@@ -49,14 +49,14 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.15.1' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.15.2' })
 
 servidor.registerTool(
   'cnpj_situacao',
   {
     title: 'Does a CNPJ exist and is it active?',
     description:
-      'Checks a CNPJ against the official Receita Federal registry: existence and registration status (Ativa/Suspensa/Baixada) with date, headquarters/branch flag and state. Costs $0.001 in USDC via x402 — the cheapest paid check in the catalog. Digit validation alone cannot tell a well-formed number from a real, active company.',
+      'Checks a CNPJ against the official Receita Federal registry: existence and registration status (Ativa/Suspensa/Baixada) with date, headquarters/branch flag and state. Costs $0.001 in USDC via x402, the cheapest paid check in the catalog. Digit validation alone cannot tell a well-formed number from a real, active company.',
     inputSchema: {
       cnpj: z.string().describe('CNPJ, 14 digits, with or without punctuation'),
     },
@@ -108,7 +108,7 @@ servidor.registerTool(
   {
     title: 'Search Brazilian companies',
     description:
-      'Search the CNPJ registry by name (full-text, accent-insensitive), state (uf), city code, CNAE activity, size, opening-date window (newly registered companies) or com_investidor (only companies with a VC/PE fund in the ownership — a proxy for venture-backed startups). At least one filter required. Costs $0.01 in USDC via x402.',
+      'Search the CNPJ registry by name (full-text, accent-insensitive), state (uf), city code, CNAE activity, size, opening-date window (newly registered companies) or com_investidor (only companies with a VC/PE fund in the ownership, a proxy for venture-backed startups). At least one filter required. Costs $0.01 in USDC via x402.',
     inputSchema: {
       nome: z.string().optional().describe('full-text search on company names'),
       uf: z.string().length(2).optional().describe('2-letter state code, e.g. SP'),
@@ -238,7 +238,7 @@ servidor.registerTool(
   {
     title: 'Central Bank of Brazil authorization check',
     description:
-      'Is this Brazilian company a Central Bank–authorized financial institution (bank, credit union, consortium)? Returns registrations and officially verified internet domains (anti-phishing). Costs $0.005 in USDC via x402. Updated daily.',
+      'Is this Brazilian company a Central Bank-authorized financial institution (bank, credit union, consortium)? Returns registrations and officially verified internet domains (anti-phishing). Costs $0.005 in USDC via x402. Updated daily.',
     inputSchema: {
       cnpj: z.string().describe('CNPJ (14 digits) or 8-digit root, punctuation ok'),
     },
@@ -305,7 +305,7 @@ servidor.registerTool(
   {
     title: 'USD/BRL: official PTAX + live crypto premium',
     description:
-      'The official PTAX rate plus the LIVE BRL crypto market: BTC/BRL, USDT/BRL and the Brazil premium (ágio) over global prices — a classic capital-flow signal, computed at request time. Costs $0.002 in USDC via x402.',
+      'The official PTAX rate plus the LIVE BRL crypto market: BTC/BRL, USDT/BRL and the Brazil premium (ágio) over global prices (a classic capital-flow signal), computed at request time. Costs $0.002 in USDC via x402.',
     inputSchema: {},
   },
   () => chamar('/v1/mercado/cambio'),
@@ -348,7 +348,7 @@ servidor.registerTool(
   {
     title: 'Brazil satellite fire hotspots (official INPE)',
     description:
-      'Daily fire hotspots by biome and state with intensity and a drought proxy — ESG, carbon and ag supply-chain signal. Costs $0.002 in USDC via x402.',
+      'Daily fire hotspots by biome and state with intensity and a drought proxy: ESG, carbon and ag supply-chain signal. Costs $0.002 in USDC via x402.',
     inputSchema: {},
   },
   () => chamar('/v1/commodities/fogo'),
@@ -370,7 +370,7 @@ servidor.registerTool(
   {
     title: 'Brazil stored hydro energy by grid subsystem',
     description:
-      'Daily EAR percent per subsystem with 7-day delta, from the official grid operator — power-price and drought gauge. Costs $0.002 in USDC via x402.',
+      'Daily EAR percent per subsystem with 7-day delta, from the official grid operator: power-price and drought gauge. Costs $0.002 in USDC via x402.',
     inputSchema: {},
   },
   () => chamar('/v1/commodities/hidrologia'),
@@ -381,7 +381,7 @@ servidor.registerTool(
   {
     title: 'Daily Brazil Commodity Briefing (AI-synthesized, English)',
     description:
-      'What changed in Brazil today for coffee, sugar, soybeans, corn, OJ, cotton and cattle — weather, fire, exports, hydro, FX and headlines condensed with per-commodity bullish/bearish flags. Costs $0.10 in USDC via x402.',
+      'What changed in Brazil today for coffee, sugar, soybeans, corn, OJ, cotton and cattle: weather, fire, exports, hydro, FX and headlines condensed with per-commodity bullish/bearish flags. Costs $0.10 in USDC via x402.',
     inputSchema: {},
   },
   () => chamar('/v1/commodities/briefing'),
@@ -435,7 +435,7 @@ servidor.registerTool(
   {
     title: 'Verify a Brazilian investment fund at the CVM',
     description:
-      'Is this CNPJ a fund registered and operating at the Brazilian securities regulator (CVM)? Returns manager, administrator, class and latest NAV, net assets and shareholders — the check against fake-fund and Ponzi schemes. Costs $0.005 in USDC via x402.',
+      'Is this CNPJ a fund registered and operating at the Brazilian securities regulator (CVM)? Returns manager, administrator, class and latest NAV, net assets and shareholders: the check against fake-fund and Ponzi schemes. Costs $0.005 in USDC via x402.',
     inputSchema: { cnpj: z.string().describe('CNPJ, 14 digits, punctuation ok') },
   },
   ({ cnpj }) => chamar(`/v1/fundos/consulta/${encodeURIComponent(cnpj)}`),
@@ -466,7 +466,7 @@ servidor.registerTool(
   {
     title: "A Brazilian fund's equity holdings (CVM portfolio disclosure)",
     description:
-      'Every stock/BDR a fund holds in its latest disclosed month — ticker, quantity, market value, and how much it bought and sold that month — from the official CVM portfolio disclosure (CDA). Disclosure is per-fund and lagged up to 90 days by law; funds with no equities do not appear. Costs $0.01 in USDC via x402.',
+      'Every stock/BDR a fund holds in its latest disclosed month (ticker, quantity, market value, and how much it bought and sold that month), from the official CVM portfolio disclosure (CDA). Disclosure is per-fund and lagged up to 90 days by law; funds with no equities do not appear. Costs $0.01 in USDC via x402.',
     inputSchema: { cnpj: z.string().describe('fund CNPJ, 14 digits, punctuation ok') },
   },
   ({ cnpj }) => chamar(`/v1/fundos/carteira/${encodeURIComponent(cnpj)}`),
@@ -506,7 +506,7 @@ servidor.registerTool(
   {
     title: 'Which Brazilian IBS/CBS tax regime applies to a product (by NCM)',
     description:
-      "Under Brazil's 2026-2033 tax reform: zero rate, 60% reduction or standard for a given NCM code — always with the LEGAL BASIS (annex, item and the literal wording of LC 214/2025) and the taxes in force that year. Not tax advice. Costs $0.005 in USDC via x402.",
+      "Under Brazil's 2026-2033 tax reform: zero rate, 60% reduction or standard for a given NCM code, always with the LEGAL BASIS (annex, item and the literal wording of LC 214/2025) and the taxes in force that year. Not tax advice. Costs $0.005 in USDC via x402.",
     inputSchema: {
       codigo: z.string().describe('NCM code, 4 to 8 digits, dots optional'),
       ano: z.string().optional().describe('year of the transition, 2026-2033'),
@@ -539,7 +539,7 @@ servidor.registerTool(
   {
     title: 'Brazilian tax transition calendar 2026-2033',
     description:
-      'Which taxes are in force each year and when PIS/COFINS, IPI, ICMS and ISS are extinguished — the context to know whether a tax rule still applies on a given date. Costs $0.002 in USDC via x402.',
+      'Which taxes are in force each year and when PIS/COFINS, IPI, ICMS and ISS are extinguished: the context to know whether a tax rule still applies on a given date. Costs $0.002 in USDC via x402.',
     inputSchema: {},
   },
   () => chamar('/v1/tributos/calendario'),
@@ -560,7 +560,7 @@ servidor.registerTool(
   {
     title: 'Causal chain for a Brazilian risk (lead time stated)',
     description:
-      'Not a measurement — the chain behind it: upstream indicator WITH its lead time, current state, observable consequence and a deterministic reading (rule, thresholds and limits included). Chains: energia_br (rain → reservoirs → thermal dispatch), cafe_kc (frost/drought → coffee crop), soja_zs (rain in Mato Grosso → yield → exports), capital_br (dollar premium → fund flows → FX). Costs $0.05 in USDC via x402.',
+      'Not a measurement but the chain behind it: upstream indicator WITH its lead time, current state, observable consequence and a deterministic reading (rule, thresholds and limits included). Chains: energia_br (rain → reservoirs → thermal dispatch), cafe_kc (frost/drought → coffee crop), soja_zs (rain in Mato Grosso → yield → exports), capital_br (dollar premium → fund flows → FX). Costs $0.05 in USDC via x402.',
     inputSchema: {
       nome: z.enum(['energia_br', 'cafe_kc', 'soja_zs', 'capital_br']),
     },
@@ -583,7 +583,7 @@ servidor.registerTool(
   {
     title: 'Deforestation record of a Brazilian municipality (EUDR cutoff)',
     description:
-      'Official INPE satellite alerts (DETER, Amazon and Cerrado) for one municipality: area cleared and alert count since 31 Dec 2020 — the EU Deforestation Regulation cutoff — plus 30/90/365-day windows, breakdown by class and ranking. Costs $0.01 in USDC via x402.',
+      'Official INPE satellite alerts (DETER, Amazon and Cerrado) for one municipality: area cleared and alert count since 31 Dec 2020 (the EU Deforestation Regulation cutoff), plus 30/90/365-day windows, breakdown by class and ranking. Costs $0.01 in USDC via x402.',
     inputSchema: { ibge: z.string().describe('IBGE municipality code, 7 digits') },
   },
   ({ ibge }) => chamar(`/v1/desmatamento/municipio/${encodeURIComponent(ibge)}`),
@@ -594,7 +594,7 @@ servidor.registerTool(
   {
     title: 'Supplier origin risk: CNPJ to its municipality deforestation record',
     description:
-      "From a Brazilian company's CNPJ to satellite-detected clearing in its registered municipality since the EUDR cutoff, with a risk level applied only to exposed sectors. Regional indicator to prioritise due diligence — the registered address is not the production plot. Costs $0.02 in USDC via x402.",
+      "From a Brazilian company's CNPJ to satellite-detected clearing in its registered municipality since the EUDR cutoff, with a risk level applied only to exposed sectors. Regional indicator to prioritise due diligence: the registered address is not the production plot. Costs $0.02 in USDC via x402.",
     inputSchema: { cnpj: z.string().describe('CNPJ, 14 digits, punctuation ok') },
   },
   ({ cnpj }) => chamar(`/v1/desmatamento/fornecedor/${encodeURIComponent(cnpj)}`),
