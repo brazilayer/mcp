@@ -1,70 +1,69 @@
-# pedagio-mcp: servidor MCP
+# Brazilayer MCP server
 
-> **Distribuição pública:** este servidor é publicado em **[github.com/brazilayer/mcp](https://github.com/brazilayer/mcp)**
-> (instalação para usuários finais lá). Esta pasta é a fonte interna; alterações aqui
-> devem ser espelhadas no repo público.
+Official Brazilian public data for AI agents, paid per call in USDC on Base through the
+[x402 protocol](https://www.x402.org/). No account and no API key: the server pays each call
+from a wallet you configure, and the free tools work without one.
 
-Cliente fino da API pública do pedagio (SPEC §8): expõe os dados de CNPJ como
-ferramentas MCP pagáveis via x402. Sem acesso direto ao banco: cada ferramenta chama a
-API HTTP e paga com USDC (rede Base) usando a carteira configurada.
+- API reference and prices: <https://api.brazilayer.com/docs>
+- Website: <https://www.brazilayer.com>
+- Listed in the [MCP Registry](https://registry.modelcontextprotocol.io) as
+  `io.github.brazilayer/mcp`, and on [PayAPI Market](https://payapi.market/api/brazilayer)
 
-## Ferramentas
+## Tools
 
-| Ferramenta | Endpoint | Preço |
-|------------|----------|-------|
-| `cnpj_consultar_empresa` | `GET /v1/cnpj/empresa/{cnpj}` | US$ 0.005 |
-| `cnpj_listar_socios` | `GET /v1/cnpj/empresa/{cnpj}/socios` | US$ 0.005 |
-| `cnpj_consultar_empresa_completo` | `GET /v1/cnpj/empresa/{cnpj}/completo` | US$ 0.01 |
-| `cnpj_buscar_empresas` | `GET /v1/cnpj/busca` | US$ 0.01 |
-| `cnpj_buscar_por_socio` | `GET /v1/cnpj/socio/busca` | US$ 0.02 |
-| `cnpj_obter_amostra` | `GET /v1/cnpj/amostra` | grátis |
-| `trust_check` | Trust rating of any x402 service before paying it (Agent Economy Report, free) | free |
-| `skill_check` | Trust rating of any agent skill before installing it (Agent Economy Report, free) | free |
-| `conduct_check` | Conduct rating of any AI agent or framework before delegating to it (Agent Economy Report arena, free) | free |
+| Family | Tools | What they return |
+|---|---|---|
+| Company registry (CNPJ) | `cnpj_situacao`, `cnpj_consultar_empresa`, `cnpj_listar_socios`, `cnpj_consultar_empresa_completo`, `cnpj_buscar_empresas`, `cnpj_buscar_por_socio` | Receita Federal registry: status, activities, address, partners, branches; search by name, place, activity or partner |
+| Sanctions | `integridade_consultar` | CEIS, CNEP, CEPIM, the slave-labour list and leniency agreements, in one call |
+| Government contracts | `licitacoes_contratos_fornecedor`, `licitacoes_oportunidades_abertas` | Contracts won by a company and tenders open now, from the national procurement portal (PNCP) |
+| Central Bank | `bcb_verificar_instituicao` | Whether a company is an authorized financial institution, with its verified domains |
+| Enrichment | `empresa_enriquecer` | Registry, partners, branches, sanctions, Central Bank and contracts in one call |
+| Market | `mercado_noticias`, `mercado_indicadores`, `mercado_cambio`, `mercado_pacote` | News with sentiment every 15 minutes; Selic, IPCA, PTAX and Focus; the BRL crypto premium |
+| Commodities | `commodities_clima`, `commodities_fogo`, `commodities_exportacoes`, `commodities_hidrologia`, `commodities_briefing`, `commodities_pacote` | Rain and frost risk in the crop belts, fire hotspots, exports, reservoirs and a daily briefing |
+| Investment funds (CVM) | `fundos_fluxos`, `fundos_verificar`, `fundos_ranking`, `fundos_carteira`, `fundos_movimentacoes` | Daily flows by class, fund registration, rankings, holdings and institutional flow per stock |
+| Tax reform | `tributos_ncm`, `tributos_busca`, `tributos_calendario` | IBS/CBS treatment by NCM code, reduced and zero rates, the transition calendar |
+| Deforestation (EUDR) | `desmatamento_municipio`, `desmatamento_fornecedor`, `desmatamento_ranking` | INPE DETER alerts by municipality, exposure of a supplier, rankings |
+| Causal chains | `cadeia_causal` | An upstream indicator with its lead time, the current state and a reading |
+| Bundle | `brasil_pacote` | The 13 endpoints that need no parameter, in one call |
+| Free samples | `*_obter_amostra` (one per family) | The response format of each family, without payment |
+| Trust checks (free) | `trust_check`, `skill_check`, `conduct_check` | The public ratings of the [Agent Economy Report](https://agenteconomy.report) for an x402 service, an agent skill or an agent, before you pay or delegate |
 
-## Instalação (Claude Code)
+## Install
+
+**Claude Desktop.** Download `brazilayer-mcp.mcpb` from the
+[latest release](https://github.com/brazilayer/mcp/releases/latest) and open it. The installer
+asks for the wallet key, which is optional.
+
+**Claude Code**, from source:
 
 ```bash
-git clone https://github.com/aladaf/pedagio && cd pedagio/mcp && npm install
-claude mcp add pedagio -e BRAZILAYER_PRIVATE_KEY=0xSUACHAVE -- npx tsx /caminho/para/pedagio/mcp/servidor.ts
+git clone https://github.com/brazilayer/mcp && cd mcp && npm install
+claude mcp add brazilayer -e BRAZILAYER_PRIVATE_KEY=0xYOUR_KEY -- npx tsx "$PWD/servidor.ts"
 ```
 
-## Instalação (Claude Desktop / Cursor)
+**Other MCP clients** (Cursor and others), after the same `git clone` and `npm install`:
 
 ```json
 {
   "mcpServers": {
-    "pedagio": {
+    "brazilayer": {
       "command": "npx",
-      "args": ["tsx", "/caminho/para/pedagio/mcp/servidor.ts"],
-      "env": {
-        "BRAZILAYER_PRIVATE_KEY": "0xCHAVE_DA_CARTEIRA_QUE_PAGA"
-      }
+      "args": ["tsx", "/path/to/mcp/servidor.ts"],
+      "env": { "BRAZILAYER_PRIVATE_KEY": "0xYOUR_KEY" }
     }
   }
 }
 ```
 
-## Variáveis
+## Configuration
 
-- `BRAZILAYER_API_URL`: default `https://api.brazilayer.com`
-- `BRAZILAYER_PRIVATE_KEY`: chave privada (0x…) da carteira que **paga** as chamadas
-  (precisa de USDC na rede Base; na testnet, USDC de faucet na Base Sepolia). Sem ela,
-  apenas `cnpj_obter_amostra` funciona; as demais explicam o 402.
+- `BRAZILAYER_PRIVATE_KEY` (optional): private key (0x…) of the wallet that pays for calls. It
+  needs USDC on Base. Without it the free tools work, and the paid ones explain the 402 they
+  received.
+- `BRAZILAYER_API_URL` (optional): defaults to `https://api.brazilayer.com`.
 
-⚠️ A chave configurada aqui assina pagamentos reais. Use uma carteira dedicada com
-saldo pequeno.
+The key signs real payments. Use a dedicated wallet with a small balance.
 
-## Escolha da integração x402↔MCP (SPEC §8)
+## License
 
-Avaliado em 2026-07-20: adotados os pacotes oficiais `@x402/fetch` + `@x402/evm`
-(v2.19), que envelopam o `fetch` com o fluxo 402→assinatura→retry, e o servidor MCP usa
-esse fetch pagante em cada ferramenta. Alternativas de bridge MCP de terceiros foram
-descartadas por serem menos mantidas que o SDK oficial.
-
----
-
-Building on the agent economy? We publish the
-**[Agent Economy Report](https://agenteconomy.report)**, a free weekly, data-generated
-index of the machine-to-machine economy (x402 services, on-chain settlement, MCP and
-paid-web adoption). One e-mail a week.
+MIT
