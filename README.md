@@ -26,7 +26,7 @@ from a wallet you configure, and the free tools work without one.
 | Causal chains | `cadeia_causal` | An upstream indicator with its lead time, the current state and a reading |
 | Bundle | `brasil_pacote` | The 13 endpoints that need no parameter, in one call |
 | Free samples | `*_obter_amostra` (one per family) | The response format of each family, without payment |
-| Trust checks (free) | `trust_check`, `skill_check`, `conduct_check` | The public ratings of the [Agent Economy Report](https://agenteconomy.report) for an x402 service, an agent skill or an agent, before you pay or delegate |
+| Trust checks (free) | `trust_check`, `skill_check` | The public ratings of the [Agent Economy Report](https://agenteconomy.report) for an x402 service or an agent skill, before you pay or install |
 
 ## Install
 

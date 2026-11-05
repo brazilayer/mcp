@@ -1,10 +1,12 @@
 {
   "name": "pedagio-mcp",
-  "version": "0.15.2",
+  "version": "0.16.0",
   "private": true,
   "type": "module",
   "description": "MCP server for Pedagio: Brazilian company data (CNPJ), paid per call via x402",
-  "bin": { "pedagio-mcp": "servidor.ts" },
+  "bin": {
+    "pedagio-mcp": "servidor.ts"
+  },
   "scripts": {
     "start": "tsx servidor.ts"
   },

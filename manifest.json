@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "brazilayer-mcp",
   "display_name": "Brazilayer: Brazilian Public Data",
-  "version": "0.15.2",
+  "version": "0.16.0",
   "description": "Brazilian company registry (CNPJ) and official sanctions screening for AI agents, paid per call in USDC via the x402 protocol. No signup, no API keys.",
   "author": {
     "name": "Brazilayer",
@@ -31,7 +31,7 @@
   "user_config": {
     "private_key": {
       "type": "string",
-      "title": "Wallet private key (0x\u2026)",
+      "title": "Wallet private key (0x…)",
       "description": "Private key of the wallet that pays for calls (USDC on Base). Use a dedicated wallet with a small budget. Leave empty to use only the free sample tools.",
       "sensitive": true,
       "required": false
