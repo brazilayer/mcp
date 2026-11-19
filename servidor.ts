@@ -49,7 +49,7 @@ async function chamar(caminho: string): Promise<{ content: { type: 'text'; text:
   return { content: [{ type: 'text', text: texto }] }
 }
 
-const servidor = new McpServer({ name: 'brazilayer', version: '0.16.0' })
+const servidor = new McpServer({ name: 'brazilayer', version: '0.17.0' })
 
 servidor.registerTool(
   'cnpj_situacao',
@@ -631,7 +631,7 @@ servidor.registerTool(
 )
 
 // Agent Economy Report (D-0035, 28/08): consultas GRÁTIS ao índice de confiança antes de
-// pagar um serviço x402 ou instalar uma skill. Sem x402 aqui (fetch puro): sentido permitido
+// pagar um serviço x402 (a de skill saiu em 19/11/2026, D-0068). Sem x402 aqui (fetch puro): sentido permitido
 // é Brazilayer → índice; o índice nunca promove o Brazilayer.
 const AER = process.env.AGENTECONOMY_URL ?? 'https://agenteconomy.report'
 
@@ -643,7 +643,7 @@ async function lerIndice(url: string): Promise<{ content: { type: 'text'; text: 
       content: [
         {
           type: 'text',
-          text: `404: not in the Agent Economy Report index yet (${url}). Treat the counterparty as unknown: ask the user before paying or installing.`,
+          text: `404: not in the Agent Economy Report index yet (${url}). Treat the counterparty as unknown: ask the user before paying.`,
         },
       ],
     }
@@ -667,21 +667,9 @@ servidor.registerTool(
   ({ host }) => lerIndice(`${AER}/s/${encodeURIComponent(host.trim().toLowerCase())}.json`),
 )
 
-servidor.registerTool(
-  'skill_check',
-  {
-    title: 'Trust rating of an agent skill (free, check before installing)',
-    description:
-      'Reads the Agent Economy Report trust rating of an agent skill from the ClawHub/OpenClaw registry by slug: tier AAA to D (trust line BBB), flags (SUSPICIOUS, UNKNOWN_PAYEE, PIPE_SHELL, OBFUSCATED, KEYS, NEW) with their meaning, downloads, age, author, the x402 services the skill pays (each with its own rating) and unknown hard-coded wallets. Free. Policy: SUSPICIOUS or D, do not install; UNKNOWN_PAYEE, PIPE_SHELL or OBFUSCATED, show the flag and ask the user; KEYS, warn. Not a security audit.',
-    inputSchema: {
-      slug: z.string().max(100).describe('Skill slug as listed in the registry, e.g. x402-trust-check'),
-    },
-  },
-  ({ slug }) => lerIndice(`${AER}/k/${encodeURIComponent(slug.trim().toLowerCase())}.json`),
-)
-
 // 04/11/2026 (D-0064): a ferramenta conduct_check saiu com a arena de conduta do Report (/a/ e
-// /api/arena respondem 410); trust_check e skill_check seguem.
+// /api/arena respondem 410). 19/11/2026 (D-0068): a skill_check saiu com o rating de skills (/k/ e
+// /api/skill respondem 410); trust_check segue.
 
 const transporte = new StdioServerTransport()
 await servidor.connect(transporte)

@@ -1,6 +1,6 @@
 {
   "name": "pedagio-mcp",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "private": true,
   "type": "module",
   "description": "MCP server for Pedagio: Brazilian company data (CNPJ), paid per call via x402",
